@@ -12,4 +12,4 @@ export function getCaseStudy(slug: string): CaseStudy | undefined {
   return STUDIES.find((s) => s.slug === slug)
 }
 
-export type { CaseStudy, Evidence } from "./types"
+export type { CaseStudy, Evidence, Transcript, TranscriptSource } from "./types"

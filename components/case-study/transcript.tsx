@@ -9,7 +9,7 @@ import type { Transcript as TranscriptData } from "@/content/work/types"
  * not a general Markdown parser, and no Markdown library is added,
  * per the plan's no-new-dependencies constraint.
  */
-type Block =
+export type Block =
   | { type: "code"; lang: string; content: string }
   | { type: "list"; items: string[] }
   | { type: "para"; content: string }
@@ -31,7 +31,7 @@ function parseTextChunks(text: string): Block[] {
     })
 }
 
-function parseAnswer(markdown: string): Block[] {
+export function parseAnswer(markdown: string): Block[] {
   const blocks: Block[] = []
   const codeFence = /```(\w*)\n([\s\S]*?)```/g
   let lastIndex = 0
@@ -50,7 +50,7 @@ function parseAnswer(markdown: string): Block[] {
 }
 
 /** Inline pass: backtick code spans and `[[n]](#src-n)` citation markers. */
-function renderInline(text: string, keyPrefix: string): ReactNode[] {
+export function renderInline(text: string, keyPrefix: string): ReactNode[] {
   const nodes: ReactNode[] = []
   const inline = /`([^`]+)`|\[\[(\d+)\]\]\(#src-\d+\)/g
   let lastIndex = 0
@@ -111,18 +111,33 @@ function AnswerBody({ answer }: { answer: string }) {
 export function Transcript({ data }: { data: TranscriptData }) {
   return (
     <div className="rounded-lg border border-border bg-card p-4 sm:p-6">
+      {data.notice ? (
+        <p className="mb-6 rounded-md border border-border bg-muted p-3 text-sm leading-relaxed text-muted-foreground">
+          {data.notice}
+        </p>
+      ) : null}
       <p className="mono-figure text-sm text-muted-foreground">Question</p>
       <p className="mt-1 font-medium">{data.question}</p>
       <p className="mono-figure mt-6 text-sm text-muted-foreground">Answer</p>
       <AnswerBody answer={data.answer} />
-      <p className="mono-figure mt-6 text-sm text-muted-foreground">Sources cited</p>
-      <ul className="mt-1 space-y-1">
-        {data.sources.map((s, i) => (
-          <li key={`${s}-${i}`} className="mono-figure text-sm break-words">
-            {s}
+      <p className="mono-figure mt-6 text-sm text-muted-foreground">
+        Sources retrieved, in the order the service numbered them
+      </p>
+      <ol className="mt-1 space-y-2">
+        {data.sources.map((s) => (
+          <li key={s.n} className="text-sm">
+            <span className="mono-figure break-words">
+              [{s.n}] {s.path}
+            </span>{" "}
+            <span className="mono-figure text-xs text-muted-foreground">
+              {s.version} · {s.cited ? "cited" : "retrieved, not cited"}
+            </span>
+            <span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground break-words">
+              {s.heading}
+            </span>
           </li>
         ))}
-      </ul>
+      </ol>
     </div>
   )
 }

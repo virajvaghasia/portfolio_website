@@ -14,7 +14,34 @@ export type Evidence = {
 
 export type MechanismStep = { step: string; detail: string }
 export type Rejected = { change: string; outcome: string }
-export type Transcript = { question: string; answer: string; sources: string[] }
+/**
+ * One retrieved passage, exactly as the service reported it.
+ *
+ * `n` is the service's own source number, and the answer text refers to it as
+ * `[n]` — so the sources are stored numbered and complete rather than filtered.
+ * Dropping the uncited passage once shifted every marker after it and made the
+ * page cite the wrong file. `cited: false` means retrieved and put in the
+ * prompt but not drawn on, which is worth showing rather than hiding.
+ */
+export type TranscriptSource = {
+  n: number
+  path: string
+  version: string
+  heading: string
+  cited: boolean
+}
+
+export type Transcript = {
+  question: string
+  answer: string
+  sources: TranscriptSource[]
+  /**
+   * What the reader needs in order to read the answer correctly — above all,
+   * when the model that wrote it is not the model the measured figures on the
+   * same page describe.
+   */
+  notice?: string
+}
 export type Link = { label: string; href: string }
 
 export type CaseStudy = {

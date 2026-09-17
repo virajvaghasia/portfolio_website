@@ -47,6 +47,36 @@ describe("case study content invariants", () => {
     }
   })
 
+  /**
+   * A captured transcript was once stored with the one uncited source removed,
+   * which shifted the answer's [4] and [5] markers onto the wrong files. The
+   * sources are the service's own numbered list, complete, or the citations on
+   * the page are wrong.
+   */
+  it("resolves every citation marker in a transcript to a source the service returned", () => {
+    for (const study of allCaseStudies()) {
+      const t = study.transcript
+      if (!t) continue
+      const numbers = t.sources.map((s) => s.n)
+      expect(numbers.length, `${study.slug} transcript has no sources`).toBeGreaterThan(0)
+      expect(new Set(numbers).size, `${study.slug} duplicate source numbers`).toBe(numbers.length)
+      expect(numbers, `${study.slug} sources are not in the service's order`).toEqual(
+        numbers.slice().sort((a, b) => a - b),
+      )
+      expect(numbers[0], `${study.slug} sources do not start at 1`).toBe(1)
+      expect(numbers.at(-1), `${study.slug} source numbers have a gap`).toBe(numbers.length)
+      for (const m of t.answer.matchAll(/\[\[(\d+)\]\]/g)) {
+        expect(numbers, `${study.slug} answer cites [${m[1]}], which is not in sources`).toContain(
+          Number(m[1]),
+        )
+      }
+      for (const src of t.sources) {
+        expect(src.path.trim(), `${study.slug} source ${src.n} path`).not.toBe("")
+        expect(src.version.trim(), `${study.slug} source ${src.n} version`).not.toBe("")
+      }
+    }
+  })
+
   it("keeps the geochem study link-free while its repository is private", () => {
     const geo = allCaseStudies().find((s) => s.slug === "geochem-pipeline")
     expect(geo, "geochem-pipeline must exist").toBeDefined()
