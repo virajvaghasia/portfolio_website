@@ -1,25 +1,19 @@
-import { Navigation } from "@/components/navigation"
-import { HeroSection } from "@/components/hero-section"
-import { AboutSection } from "@/components/about-section"
-import { ExperienceSection } from "@/components/experience-section"
-import { ProjectsSection } from "@/components/projects-section"
-import { PublicationsSection } from "@/components/publications-section"
-import { SkillsSection } from "@/components/skills-section"
-import { ContactSection } from "@/components/contact-section"
-import { Footer } from "@/components/footer"
+import { SiteHeader } from "@/components/site-header"
+import { SiteFooter } from "@/components/site-footer"
+import { Hero } from "@/components/home/hero"
+import { WorkIndex } from "@/components/home/work-index"
+import { Timeline } from "@/components/home/timeline"
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
-      <Navigation />
-      <HeroSection />
-      <AboutSection />
-      <ExperienceSection />
-      <ProjectsSection />
-      <PublicationsSection />
-      <SkillsSection />
-      <ContactSection />
-      <Footer />
-    </main>
+    <>
+      <SiteHeader />
+      <main className="mx-auto max-w-3xl space-y-16 px-4 pb-24">
+        <Hero />
+        <WorkIndex />
+        <Timeline />
+        <SiteFooter />
+      </main>
+    </>
   )
 }
