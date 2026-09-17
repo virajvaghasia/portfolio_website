@@ -97,6 +97,17 @@ export const sqlalchemyUpgradeAgent: CaseStudy = {
         "Raised recall and broke ten items the hybrid list already had. Seat-5 promotion ships instead: one item fixed, none broken.",
     },
   ],
+  transcript: {
+    question: "Why can I no longer call engine.execute()?",
+    answer:
+      "In SQLAlchemy 2.0, `engine.execute()` is no longer supported because it was part of the \"connectionless\" and \"implicit\" execution patterns that have been removed [[1]](#src-1). The documentation explicitly lists `result = engine.execute(t.select())` as no longer supported [[1]](#src-1).\n\nThe reasons for this removal are detailed in the migration guide [[2]](#src-2):\n\n- It led to inefficient, non-transactional applications, as the feature was overused and confused new users about the difference between `engine.execute()` and `connection.execute()`.\n- It relied on the \"application level autocommit\" feature, which was also removed as it was considered inefficient and misleading.\n- It did not properly manage connection resources: `Engine.execute` returned a result object with unconsumed cursor results, which kept the DBAPI connection in an open transaction until the result set was fully consumed, meaning the engine did not actually close out the connection resources it claimed to manage.\n\nThe correct way to execute statements in 2.0 is via the `Connection.execute()` method (or `Session.execute()` when using the ORM) [[5]](#src-5). For example:\n\n```python\nwith engine.connect() as conn:\n    result = conn.execute(stmt)\n```\n\nNote that source [[4]](#src-4) is from the 1.4 documentation and describes these patterns as discouraged but still present in 1.x; it does not cover the 2.0 removal itself.",
+    sources: [
+      "doc/build/changelog/migration_20.rst",
+      "doc/build/changelog/migration_20.rst",
+      "doc/build/core/connections.rst",
+      "doc/build/errors.rst",
+    ],
+  },
   limits: [
     "End to end it delivers 0.43, not 0.64. The 0.64 is retrieval's ceiling — the page reaching the prompt — and roughly twenty points are lost in generation, not search.",
     "It fabricates. On nine deliberately unanswerable questions it refused seven and invented answers for two. One produced an Alembic script calling op.create_view and op.drop_view, neither of which exists in that version, sitting next to two calls that do.",
