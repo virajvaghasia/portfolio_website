@@ -21,10 +21,12 @@ export function Hero() {
       {/* The point of the first screen: a number a reader can check. */}
       <dl className="mt-12 grid gap-8 border-t border-border pt-8 sm:grid-cols-2">
         {headlines.map((h) => (
-          <div key={h.slug}>
-            <dd className="mono-figure text-4xl font-semibold">{h.value}</dd>
-            <dt className="mt-1 text-sm font-medium">{h.claim}</dt>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{h.method}</p>
+          /* <dt> precedes <dd> in the DOM, as a definition list requires; the
+             figure is put back above the claim visually with flex `order`. */
+          <div key={h.slug} className="flex flex-col">
+            <dt className="order-2 mt-1 text-sm font-medium break-words">{h.claim}</dt>
+            <dd className="order-1 mono-figure text-4xl font-semibold break-words">{h.value}</dd>
+            <p className="order-3 mt-2 text-sm leading-relaxed text-muted-foreground">{h.method}</p>
           </div>
         ))}
       </dl>

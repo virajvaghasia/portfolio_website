@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "npm run check:links && next build",
+    "build": "npm run check:links && npm test && tsc --noEmit && next build",
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start",

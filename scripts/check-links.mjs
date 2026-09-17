@@ -5,11 +5,16 @@
  * all 404. A recruiter clicking any project link got nothing, which reads as
  * invented rather than stale. Vigilance did not catch that for years, so this
  * runs before every build instead.
+ *
+ * Spec §10.2 asks for `content/` *and* the components, so all three source
+ * roots are walked. Walking only `content/` passed by coincidence: nothing
+ * hard-codes a URL in a component today, and nothing structural stopped it.
  */
 import { readdir, readFile } from "node:fs/promises"
 import path from "node:path"
 
-const ROOT = path.resolve(import.meta.dirname, "..", "content")
+const REPO = path.resolve(import.meta.dirname, "..")
+const ROOTS = ["content", "components", "app"].map((d) => path.join(REPO, d))
 const URL_RE = /https:\/\/[^\s"'`)<>]+/g
 // LinkedIn answers automated requests with 999 rather than 200. That is a live
 // page refusing a bot, not a dead link.
@@ -26,7 +31,9 @@ async function walk(dir) {
 }
 
 const urls = new Map()
-for (const file of await walk(ROOT)) {
+const files = []
+for (const root of ROOTS) files.push(...(await walk(root)))
+for (const file of files) {
   const text = await readFile(file, "utf8")
   for (const raw of text.match(URL_RE) ?? []) {
     const url = raw.replace(/[.,]+$/, "")
@@ -35,7 +42,7 @@ for (const file of await walk(ROOT)) {
 }
 
 if (urls.size === 0) {
-  console.error("check-links: found no URLs under content/ — the scanner is broken")
+  console.error("check-links: found no URLs under content/, components/ or app/ — the scanner is broken")
   process.exit(1)
 }
 
@@ -46,13 +53,13 @@ for (const [url, file] of urls) {
     const res = await fetch(url, { redirect: "follow", signal: AbortSignal.timeout(25000) })
     status = res.status
   } catch (err) {
-    console.error(`  DEAD  ${url}\n        in ${path.relative(ROOT, file)} — ${err.message}`)
+    console.error(`  DEAD  ${url}\n        in ${path.relative(REPO, file)} — ${err.message}`)
     failed++
     continue
   }
   if (OK(status)) console.log(`  ok    ${status}  ${url}`)
   else {
-    console.error(`  DEAD  ${status}  ${url}\n        in ${path.relative(ROOT, file)}`)
+    console.error(`  DEAD  ${status}  ${url}\n        in ${path.relative(REPO, file)}`)
     failed++
   }
 }

@@ -7,6 +7,13 @@ export function generateStaticParams() {
   return allCaseStudies().map((s) => ({ slug: s.slug }))
 }
 
+/**
+ * There are exactly as many case studies as `content/work` lists. Without this,
+ * an unknown slug was rendered on demand, cached, and served with HTTP 200 —
+ * a "not found" page that told a crawler it had found something.
+ */
+export const dynamicParams = false
+
 // Next 15: params is a Promise.
 export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> },
