@@ -1,8 +1,8 @@
 import type { CaseStudy } from "./types"
+import { sqlalchemyUpgradeAgent } from "./sqlalchemy-upgrade-agent"
+import { geochemPipeline } from "./geochem-pipeline"
 
-// Task 2 fills this. Empty is deliberate: this task must end with a suite that
-// passes, so the registry ships before the content does.
-const STUDIES: CaseStudy[] = []
+const STUDIES: CaseStudy[] = [sqlalchemyUpgradeAgent, geochemPipeline]
 
 export function allCaseStudies(): CaseStudy[] {
   return STUDIES

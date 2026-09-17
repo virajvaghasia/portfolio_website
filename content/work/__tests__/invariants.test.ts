@@ -35,4 +35,21 @@ describe("case study content invariants", () => {
       }
     }
   })
+
+  it("has both case studies", () => {
+    expect(allCaseStudies().length).toBe(2)
+  })
+
+  it("never states a figure without a method, even in the headline", () => {
+    for (const study of allCaseStudies()) {
+      expect(study.headline.method.trim(), `${study.slug} headline`).not.toBe("")
+      expect(study.headline.value.trim(), `${study.slug} headline value`).not.toBe("")
+    }
+  })
+
+  it("keeps the geochem study link-free while its repository is private", () => {
+    const geo = allCaseStudies().find((s) => s.slug === "geochem-pipeline")
+    expect(geo, "geochem-pipeline must exist").toBeDefined()
+    expect(geo!.links).toHaveLength(0)
+  })
 })
