@@ -4,13 +4,14 @@ export const geochemPipeline: CaseStudy = {
   slug: "geochem-pipeline",
   title: "Geological literature acquisition pipeline",
   summary:
-    "A restartable pipeline that acquires, organises and classifies geology journal articles for a DARPA CRITICALMAAS project at USC ISI.",
+    "A restartable pipeline that acquires, organises and classifies geology journal articles for a critical-minerals research project at USC ISI.",
   stack: ["Python", "SQLite", "Playwright", "Crossref API", "pytest"],
   period: "May 2026 – present",
   links: [],
   headline: {
     claim: "Articles acquired",
     value: "30,096",
+    basis: "status='downloaded' rows in the acquisition ledger",
     method:
       "Rows with status 'downloaded' in the acquisition ledger: sqlite3 acquire/_state/ledger.db \"select count(*) from articles where status='downloaded'\". The figure grows as the pipeline runs.",
     asOf: "2026-09-17",
@@ -61,10 +62,10 @@ export const geochemPipeline: CaseStudy = {
     },
     {
       claim: "Tests",
-      value: "295",
+      value: "348",
       method:
-        "pytest -q --collect-only -m \"not network\" reports 288/295 collected, 7 deselected. The suite is still growing.",
-      asOf: "2026-09-17",
+        "pytest -q --collect-only -m \"not network\" reports 341/348 collected, 7 deselected. The suite is still growing.",
+      asOf: "2026-09-18",
     },
     {
       claim: "Gold open-access papers recovered by one parsing fix",

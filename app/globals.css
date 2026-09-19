@@ -4,26 +4,27 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: oklch(0.99 0 0);
+  /* Soft paper grey — pure white was too harsh against the work band. */
+  --background: oklch(0.965 0 0);
   --foreground: oklch(0.17 0 0);
-  --card: oklch(0.99 0 0);
+  --card: oklch(0.98 0 0);
   --card-foreground: oklch(0.17 0 0);
-  --popover: oklch(0.99 0 0);
+  --popover: oklch(0.98 0 0);
   --popover-foreground: oklch(0.17 0 0);
   /* The single accent. Used for links, focus rings and the active nav item —
      never for decoration. */
   --primary: oklch(0.48 0.16 250);
-  --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.95 0 0);
+  --primary-foreground: oklch(0.98 0 0);
+  --secondary: oklch(0.93 0 0);
   --secondary-foreground: oklch(0.25 0 0);
-  --muted: oklch(0.96 0 0);
-  --muted-foreground: oklch(0.48 0 0);
+  --muted: oklch(0.93 0 0);
+  --muted-foreground: oklch(0.45 0 0);
   --accent: oklch(0.48 0.16 250);
-  --accent-foreground: oklch(0.99 0 0);
+  --accent-foreground: oklch(0.98 0 0);
   --destructive: oklch(0.55 0.21 27);
-  --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.9 0 0);
-  --input: oklch(0.94 0 0);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.86 0 0);
+  --input: oklch(0.91 0 0);
   --ring: oklch(0.48 0.16 250 / 0.45);
   --radius: 0.5rem;
 }
@@ -51,8 +52,8 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-editorial);
+  --font-mono: var(--font-figure);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -87,18 +88,13 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
-
-  /* Added smooth scrolling for navigation */
   html {
     scroll-behavior: smooth;
+    /* Prevents the classic “content drifts right” feel when a scrollbar appears. */
+    scrollbar-gutter: stable;
   }
-}
-
-@layer base {
   body {
+    @apply bg-background text-foreground;
     background-color: var(--background);
     color: var(--foreground);
   }
@@ -107,7 +103,7 @@
 @layer utilities {
   /* Numbers are the display type on this site. */
   .mono-figure {
-    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    font-family: var(--font-mono), ui-monospace, monospace;
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.02em;
   }
@@ -115,4 +111,127 @@
   .prose-measure {
     max-width: 34rem;
   }
+
+  /*
+   * Ink-wash link: underline at rest; on hover the rule expands into a soft
+   * background band so the link sits *in* the section colour, not on top of it.
+   */
+  .link-ink {
+    position: relative;
+    display: inline-block;
+    padding-block: 0.2em;
+    padding-inline: 0.15em;
+    margin-inline: -0.15em;
+    text-decoration: none;
+    isolation: isolate;
+    transition: color 0.2s ease;
+  }
+  .link-ink::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.35;
+    z-index: -1;
+    transition:
+      height 0.22s ease,
+      opacity 0.22s ease;
+  }
+  .link-ink:hover::before,
+  .link-ink:focus-visible::before {
+    height: 100%;
+    opacity: 0.1;
+  }
+  .link-ink:focus-visible {
+    outline: 2px solid var(--foreground);
+    outline-offset: 3px;
+  }
+
+  /* Stronger primary action — full invert into the page ink. */
+  .link-ink-strong {
+    position: relative;
+    display: inline-block;
+    padding-block: 0.2em;
+    padding-inline: 0.2em;
+    margin-inline: -0.2em;
+    text-decoration: none;
+    isolation: isolate;
+    transition: color 0.2s ease;
+  }
+  .link-ink-strong::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--foreground);
+    z-index: -1;
+    transition: height 0.22s ease;
+  }
+  .link-ink-strong:hover,
+  .link-ink-strong:focus-visible {
+    color: var(--background);
+  }
+  .link-ink-strong:hover::before,
+  .link-ink-strong:focus-visible::before {
+    height: 100%;
+  }
+  .link-ink-strong:focus-visible {
+    outline: 2px solid var(--foreground);
+    outline-offset: 3px;
+  }
+
+  /* Nav links: soft wash behind the label. */
+  .link-nav {
+    position: relative;
+    display: inline-block;
+    padding-block: 0.35em;
+    padding-inline: 0.35em;
+    margin-inline: -0.35em;
+    text-decoration: none;
+    isolation: isolate;
+    transition: color 0.2s ease;
+  }
+  .link-nav::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: currentColor;
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 0.2s ease;
+  }
+  .link-nav:hover,
+  .link-nav:focus-visible {
+    color: var(--foreground);
+  }
+  .link-nav:hover::before,
+  .link-nav:focus-visible::before {
+    opacity: 0.08;
+  }
+  .link-nav:focus-visible {
+    outline: 2px solid var(--foreground);
+    outline-offset: 3px;
+  }
+
+  /*
+   * WCAG 2.2 "Target Size (Minimum)" wants 24x24 CSS px. These links render at
+   * 23px on a phone — one pixel short. Growing `padding-block` would drag the
+   * underline (::before, pinned to `bottom: 0`) away from the text, so the hit
+   * area is extended with an invisible overlay instead: nothing moves on
+   * screen, and the tappable box clears 24px with room to spare.
+   */
+  .link-ink::after,
+  .link-ink-strong::after,
+  .link-nav::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: 50%;
+    translate: 0 -50%;
+    min-height: 28px;
+  }
+
 }

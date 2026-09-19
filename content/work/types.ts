@@ -9,6 +9,14 @@ export type Evidence = {
   claim: string
   value: string
   method: string
+  /**
+   * The one-line version of `method`, for places that show the figure without
+   * room for the full sentence — the home page index above all. It must be a
+   * true abbreviation of `method`, never a softer or rounder claim, because a
+   * figure that travels without its basis is the thing this file exists to
+   * prevent.
+   */
+  basis?: string
   asOf?: string
 }
 

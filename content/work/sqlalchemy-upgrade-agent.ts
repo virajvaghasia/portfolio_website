@@ -14,6 +14,7 @@ export const sqlalchemyUpgradeAgent: CaseStudy = {
   headline: {
     claim: "Correct page in the top 5",
     value: "0.49 → 0.64",
+    basis: "recall@5, 100-question hand-verified set, ±0.097",
     method:
       "recall@5 over a 100-question hand-verified set, read as paired per-question wins rather than an averaged score, because the confidence band (±0.097) is wider than most of the gains being claimed.",
   },

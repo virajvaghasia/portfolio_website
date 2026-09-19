@@ -2,6 +2,8 @@ import { notFound } from "next/navigation"
 import type { Metadata } from "next"
 import { allCaseStudies, getCaseStudy } from "@/content/work"
 import { CaseStudyView } from "@/components/case-study/case-study-view"
+import { SiteHeader } from "@/components/site-header"
+import { SiteFooter } from "@/components/site-footer"
 
 export function generateStaticParams() {
   return allCaseStudies().map((s) => ({ slug: s.slug }))
@@ -29,8 +31,12 @@ export default async function WorkPage({ params }: { params: Promise<{ slug: str
   const study = getCaseStudy(slug)
   if (!study) notFound()
   return (
-    <main className="mx-auto max-w-3xl px-4 py-16 sm:py-24">
-      <CaseStudyView study={study} />
-    </main>
+    <>
+      <SiteHeader />
+      <main className="mx-auto w-full max-w-7xl px-6 md:px-10">
+        <CaseStudyView study={study} />
+      </main>
+      <SiteFooter />
+    </>
   )
 }
