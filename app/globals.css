@@ -103,7 +103,7 @@
 @layer utilities {
   /* Numbers are the display type on this site. */
   .mono-figure {
-    font-family: var(--font-mono), ui-monospace, monospace;
+    font-family: var(--font-figure), ui-monospace, monospace;
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.02em;
   }
