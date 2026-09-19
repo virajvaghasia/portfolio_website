@@ -4,6 +4,11 @@
  * On 2026-09-16 this site had four: two demo URLs and two GitHub repositories,
  * all 404. A recruiter clicking any project link got nothing, which reads as
  * invented rather than stale. Vigilance did not catch that for years, so this
+ * runs as `npm run check:links` (and inside `npm run verify`) rather than
+ * inside `npm run build`. It was in the build chain once and broke deploys:
+ * every push then depended on ijcrt.org, linkedin.com and a Modal app that
+ * scales to zero all answering a datacenter IP within 25 seconds. A dead link
+ * should fail a pre-ship check, not stop the site from shipping at all.
  * runs before every build instead.
  *
  * Spec §10.2 asks for `content/` *and* the components, so all three source
