@@ -31,7 +31,7 @@ export function SiteHeader() {
             <Link href="/#record" className="link-nav text-muted-foreground">
               Record
             </Link>
-            <a href="/resume.pdf" className="link-nav text-muted-foreground">
+            <a href="/Viraj_Vaghasia_Resume.pdf" className="link-nav text-muted-foreground">
               Resume
             </a>
           </nav>

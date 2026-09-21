@@ -20,23 +20,23 @@ export const sqlalchemyUpgradeAgent: CaseStudy = {
   },
   problem: [
     "Upgrading a codebase from SQLAlchemy 1.4 to 2.0 means answering hundreds of small, specific questions, and a general-purpose model answers them from a blurred memory of both versions at once.",
-    "A wrong migration instruction is worse than no instruction, because someone runs it against a real database. So the useful system is not the one that always answers — it is the one that answers from the documentation and says so when it cannot.",
+    "A wrong migration instruction is worse than no instruction, because someone runs it against a real database. So the useful system is not the one that always answers. It is the one that answers from the documentation and says so when it cannot.",
   ],
   mechanism: [
     {
       step: "Chunk and embed the documentation",
       detail:
-        "3,284 passages from the SQLAlchemy 1.4 and 2.0 docs, embedded with BGE-M3. The Qdrant collection name contains the model and the first eight characters of its revision, because vectors from two revisions are not comparable — putting the revision in the name makes a silently mixed collection inexpressible rather than merely discouraged.",
+        "3,284 passages from the SQLAlchemy 1.4 and 2.0 docs, embedded with BGE-M3. The Qdrant collection name contains the model and the first eight characters of its revision, because vectors from two revisions are not comparable; putting the revision in the name makes a silently mixed collection inexpressible rather than merely discouraged.",
     },
     {
       step: "Collapse cross-version twins",
       detail:
-        "874 of the 3,284 chunks are one half of a pair sharing the same heading path and text, and those pairs embed to byte-identical vectors — so search returned both into adjacent slots, spending a prompt seat on a duplicate. Retrieval over-fetches, keeps one copy per key, and prefers the 2.0 half because the product answers upgrade questions.",
+        "874 of the 3,284 chunks are one half of a pair sharing the same heading path and text, and those pairs embed to byte-identical vectors, so search returned both into adjacent slots, spending a prompt seat on a duplicate. Retrieval over-fetches, keeps one copy per key, and prefers the 2.0 half because the product answers upgrade questions.",
     },
     {
       step: "Fuse dense search with BM25",
       detail:
-        "Reciprocal Rank Fusion over ranks rather than scores, because cosine similarity sits around 0.3–0.7 while BM25 is unbounded — adding them would let whichever channel shouts louder own the list. Dense gets the stronger vote (k=25 against 90): BM25 is the rescue channel for a developer who types an error message, not a co-equal.",
+        "Reciprocal Rank Fusion over ranks rather than scores, because cosine similarity sits around 0.3–0.7 while BM25 is unbounded; adding them would let whichever channel shouts louder own the list. Dense gets the stronger vote (k=25 against 90): BM25 is the rescue channel for a developer who types an error message, not a co-equal.",
     },
     {
       step: "Promote one seat with a cross-encoder",
@@ -46,7 +46,7 @@ export const sqlalchemyUpgradeAgent: CaseStudy = {
     {
       step: "Answer, cite, or decline",
       detail:
-        "Five pages go into the prompt at temperature 0. The prompt requires a citation per claim and permits a refusal only when no source is about the subject at all — and requires the refusal to name what was looked for, which forces a check instead of a pattern match.",
+        "Five pages go into the prompt at temperature 0. The prompt requires a citation per claim and permits a refusal only when no source is about the subject at all, and requires the refusal to name what was looked for, which forces a check instead of a pattern match.",
     },
   ],
   evidence: [
@@ -67,13 +67,32 @@ export const sqlalchemyUpgradeAgent: CaseStudy = {
       claim: "Evaluation questions, hand-verified",
       value: "100",
       method:
-        "Half harvested from real Stack Overflow and GitHub questions rather than written here. Candidate answer chunks were proposed with BM25 — a channel the graded system does not use — so the benchmark is not graded against itself.",
+        "Half harvested from real Stack Overflow and GitHub questions rather than written here. Candidate answer chunks were proposed with BM25 (a channel the graded system does not use), so the benchmark is not graded against itself.",
     },
     {
       claim: "Pull requests blocked by the quality gate",
       value: "1",
       method:
         "A GitHub Actions job re-scores the 100 questions on every retrieval-touching PR. A PR removing the reranker was blocked, naming the question it broke (g017).",
+    },
+    {
+      claim: "Answers fully supported by the pages they cite",
+      value: "91% / 81%",
+      method:
+        "The hosted model and the local one, read by the same judge over the same golden set: 91% against 81%, p = 0.45: level, not a difference. Supported is not the same as correct: the judge called three wrong answers fully supported.",
+    },
+    {
+      claim: "End to end if only the local model's refusals escalate to the hosted one",
+      value: "0.42 → 0.53",
+      method:
+        "An upper bound, not a shipped number: 48 of 91 answerable questions, against 0.42 for the local model alone. The cascade costs $1.81 per 1000 queries at list price; every call in the measurement ran on free credits.",
+    },
+    {
+      claim: "Injection attempts the deployed model obeyed, before and after fencing",
+      value: "16 → 10",
+      method:
+        "90 pre-registered attempts against the deployed model in one sitting, with the control re-run alongside rather than quoted from an earlier session: fence_user fixed 6 and broke 0, p = 0.031. Every canary-bearing attempt in the phase was read and signed by a human rather than scored by a model.",
+      asOf: "2026-09-17",
     },
     {
       claim: "Tests",
@@ -83,6 +102,16 @@ export const sqlalchemyUpgradeAgent: CaseStudy = {
   ],
   rejected: [
     {
+      change: "Report that the agent architecture performs worse than the one-shot pipeline",
+      outcome:
+        "Retracted, because the instrument was wrong rather than the architecture. The agent's observation step truncated every retrieved passage to 600 characters, and the median passage is 1,299; 2,755 of the 3,284 exceed 600, so it was reasoning over roughly half of what it had been shown. Re-run on the whole text it scores 0.43, level with the pipeline it was supposed to be losing to. Every earlier 'the agent is worse' figure came off the page as a comparison. What surfaced it was a gap I could not explain: the agent refused 49% of the time with the right page in front of it against the pipeline's 33%, same model, same page.",
+    },
+    {
+      change: "Ship prompt fencing as the injection mitigation",
+      outcome:
+        "It worked and still did not ship. The bar was written before the run (obeyed ≤ 5), and the best arm landed on 6, one attempt above the line. The two-sided variant opened two new holes while gaining nothing over fencing the user turn alone. Correcting the metric afterwards did not change the decision, which is the only reason the correction is usable.",
+    },
+    {
       change: "Strip Sphinx markup before chunking",
       outcome:
         "Recall fell from 0.64 to 0.58. Reverted, and the index restored.",
@@ -90,7 +119,7 @@ export const sqlalchemyUpgradeAgent: CaseStudy = {
     {
       change: "Re-chunk on document boundaries",
       outcome:
-        "Cancelled before it was built. The theory was that missed pages had badly split text; the control said otherwise — the pages retrieval did find carried broken chunks at the same ~2% rate. The defect the fix assumed did not exist.",
+        "Cancelled before it was built. The theory was that missed pages had badly split text; the control said otherwise: the pages retrieval did find carried broken chunks at the same ~2% rate. The defect the fix assumed did not exist.",
     },
     {
       change: "Reorder the whole top-20 with the cross-encoder",
@@ -152,9 +181,11 @@ export const sqlalchemyUpgradeAgent: CaseStudy = {
       "This answer was written by deepseek-ai/deepseek-v4-flash-0731, which is not the system the measured figures on this page describe. It was put in place on 2026-09-16, when the previous page model stopped being callable on this API key, and it has never been scored on this project's question set. The measured system of record is the local qwen2.5-coder:7b. Retrieval and the prompt are unchanged, so the five sources listed below are the same ones every measurement used.",
   },
   limits: [
-    "End to end it delivers 0.42–0.43 depending on the machine, not 0.64 — a range rather than a number because generation did not reproduce across the two machines it was measured on (0.43 on the Mac, 0.42 in the lab) while retrieval reproduced exactly. Either figure is well below 0.64, which is retrieval's ceiling — the page reaching the prompt — so roughly twenty points are lost in generation, not search.",
+    "End to end it delivers 0.42–0.43 depending on the machine, not 0.64, a range rather than a number because generation did not reproduce across the two machines it was measured on (0.43 on the Mac, 0.42 in the lab) while retrieval reproduced exactly. Either figure is well below 0.64, which is retrieval's ceiling (the page reaching the prompt), so roughly twenty points are lost in generation, not search.",
     "It fabricates. On nine deliberately unanswerable questions it refused seven and invented answers for two. One produced an Alembic script calling op.create_view and op.drop_view, neither of which exists in that version, sitting next to two calls that do.",
-    "An earlier measurement on three unanswerable questions showed zero fabrications. That was the sample size, not the system — three items were never enough to measure a fabrication rate.",
+    "An earlier measurement on three unanswerable questions showed zero fabrications. That was the sample size, not the system. Three items were never enough to measure a fabrication rate.",
+    "A judge scoring answers as \"fully supported\" is not scoring them as correct. On this set it marked three wrong answers as fully supported, so the 91% and 81% figures measure whether an answer stays inside its sources, not whether the sources were read right.",
+    "Fencing does not stop exfiltration. On the one leak this model has, the attack survives it 6 of 6 with the system prompt echoed back verbatim; markers are not a mitigation for that, and nothing shipped to address it.",
     "It answers only from indexed SQLAlchemy documentation. It is not a general Python assistant and does not read your codebase.",
   ],
 }

@@ -8,7 +8,7 @@ export const PROFILE = {
   email: "virajvaghasiamv907@gmail.com",
   links: [
     { label: "GitHub", href: "https://github.com/virajvaghasia" },
-    { label: "LinkedIn", href: "https://www.linkedin.com/in/viraj-vaghasia-242b6a245" },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/virajvaghasia" },
   ],
 }
 

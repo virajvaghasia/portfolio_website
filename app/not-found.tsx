@@ -2,7 +2,7 @@ import Link from "next/link"
 import type { Metadata } from "next"
 import { SiteHeader } from "@/components/site-header"
 
-export const metadata: Metadata = { title: "Page not found — Viraj Vaghasia" }
+export const metadata: Metadata = { title: "Page not found · Viraj Vaghasia" }
 
 export default function NotFound() {
   return (

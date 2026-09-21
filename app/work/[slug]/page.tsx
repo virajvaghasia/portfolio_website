@@ -23,7 +23,7 @@ export async function generateMetadata(
   const { slug } = await params
   const study = getCaseStudy(slug)
   if (!study) return {}
-  return { title: `${study.title} — Viraj Vaghasia`, description: study.summary }
+  return { title: `${study.title} · Viraj Vaghasia`, description: study.summary }
 }
 
 export default async function WorkPage({ params }: { params: Promise<{ slug: string }> }) {

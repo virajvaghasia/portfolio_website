@@ -43,7 +43,7 @@ export function WorkIndex() {
 
                   <div className={`md:col-span-7 ${flipped ? "md:order-1" : ""}`}>
                     <Label className="text-muted-foreground">
-                      {String(i + 1).padStart(2, "0")} — {s.period}
+                      {String(i + 1).padStart(2, "0")} · {s.period}
                     </Label>
                     <h3 className="mt-2 text-[26px] font-semibold leading-[1.12] tracking-[-0.01em] md:text-[32px]">
                       <Link href={`/work/${s.slug}`} className="link-ink">

@@ -34,7 +34,7 @@ export function Hero() {
             </p>
             <p className="mt-6 max-w-[42rem] leading-[1.6] text-muted-foreground">{PROFILE.positioning}</p>
             <div className="mono-figure mt-8 flex flex-wrap gap-x-5 gap-y-3 text-[12px] uppercase tracking-[0.12em]">
-              <a href="/resume.pdf" className="link-ink-strong">
+              <a href="/Viraj_Vaghasia_Resume.pdf" className="link-ink-strong">
                 Resume (PDF)
               </a>
               {PROFILE.links.map((l) => (

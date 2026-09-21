@@ -38,13 +38,13 @@ const figure = localFont({
 })
 
 export const metadata: Metadata = {
-  title: "Viraj Vaghasia — Software Engineer",
+  title: "Viraj Vaghasia · Software Engineer",
   description:
     "M.S. Computer Science candidate building backend services, data pipelines and document retrieval systems. Case studies with the measurements behind them.",
   keywords: ["software engineer", "backend", "information retrieval", "Python", "TypeScript"],
   authors: [{ name: "Viraj Vaghasia" }],
   openGraph: {
-    title: "Viraj Vaghasia — Software Engineer",
+    title: "Viraj Vaghasia · Software Engineer",
     description: "Case studies with the measurements behind them.",
     type: "website",
   },
