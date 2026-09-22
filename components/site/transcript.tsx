@@ -60,13 +60,13 @@ export function renderInline(text: string, keyPrefix: string): ReactNode[] {
     if (match.index > lastIndex) nodes.push(text.slice(lastIndex, match.index))
     if (match[1] !== undefined) {
       nodes.push(
-        <code key={`${keyPrefix}-code-${i}`} className="rounded bg-muted px-1 py-0.5 font-mono text-[0.85em]">
+        <code key={`${keyPrefix}-code-${i}`} className="ic">
           {match[1]}
         </code>,
       )
     } else if (match[2] !== undefined) {
       nodes.push(
-        <span key={`${keyPrefix}-cite-${i}`} className="mono-figure text-xs text-muted-foreground">
+        <span key={`${keyPrefix}-cite-${i}`} className="cite">
           {`[${match[2]}]`}
         </span>,
       )
@@ -81,21 +81,18 @@ export function renderInline(text: string, keyPrefix: string): ReactNode[] {
 function AnswerBody({ answer }: { answer: string }) {
   const blocks = parseAnswer(answer)
   return (
-    <div className="mt-1 space-y-3 text-sm leading-relaxed">
+    <div className="tx-answer">
       {blocks.map((block, idx) => {
         if (block.type === "code") {
           return (
-            <pre
-              key={idx}
-              className="max-w-full overflow-x-auto rounded-md bg-muted p-3 font-mono text-xs leading-relaxed"
-            >
+            <pre key={idx} tabIndex={0}>
               <code>{block.content}</code>
             </pre>
           )
         }
         if (block.type === "list") {
           return (
-            <ul key={idx} className="list-disc space-y-1 pl-5">
+            <ul key={idx}>
               {block.items.map((item, i) => (
                 <li key={i}>{renderInline(item, `${idx}-${i}`)}</li>
               ))}
@@ -108,36 +105,38 @@ function AnswerBody({ answer }: { answer: string }) {
   )
 }
 
-export function Transcript({ data }: { data: TranscriptData }) {
+/** The whole exchange, in the same window the home page shows a slice of. */
+export function Transcript({ data, url }: { data: TranscriptData; url?: string }) {
   return (
-    <div className="rounded-lg border border-border bg-card p-4 sm:p-6">
-      {data.notice ? (
-        <p className="mb-6 rounded-md border border-border bg-muted p-3 text-sm leading-relaxed text-muted-foreground">
-          {data.notice}
+    <figure className="window tx" aria-label="A full answer from the deployed service">
+      <div className="chrome" aria-hidden="true">
+        <i /><i /><i />
+        {url ? <span className="url">{url.replace(/^https:\/\//, "")}</span> : null}
+      </div>
+      <div className="win-body">
+        {data.notice ? <p className="tx-notice">{data.notice}</p> : null}
+        <p className="q">
+          <span className="who">Question</span>
+          {data.question}
         </p>
-      ) : null}
-      <p className="mono-figure text-sm text-muted-foreground">Question</p>
-      <p className="mt-1 font-medium">{data.question}</p>
-      <p className="mono-figure mt-6 text-sm text-muted-foreground">Answer</p>
-      <AnswerBody answer={data.answer} />
-      <p className="mono-figure mt-6 text-sm text-muted-foreground">
-        Sources retrieved, in the order the service numbered them
-      </p>
-      <ol className="mt-1 space-y-2">
-        {data.sources.map((s) => (
-          <li key={s.n} className="text-sm">
-            <span className="mono-figure break-words">
-              [{s.n}] {s.path}
-            </span>{" "}
-            <span className="mono-figure text-xs text-muted-foreground">
-              {s.version} · {s.cited ? "cited" : "retrieved, not cited"}
-            </span>
-            <span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground break-words">
-              {s.heading}
-            </span>
-          </li>
-        ))}
-      </ol>
-    </div>
+        <div className="a">
+          <span className="who">Answer</span>
+          <AnswerBody answer={data.answer} />
+        </div>
+        <p className="who tx-src-h">Sources retrieved, in the order the service numbered them</p>
+        <ol className="tx-srcs">
+          {data.sources.map((s) => (
+            <li key={s.n} className={s.cited ? "" : "uncited"}>
+              <span className="cite">{s.n}</span>
+              <div>
+                <code>{s.path}</code> <span className={`ver ${s.version.startsWith("1") ? "old" : ""}`}>{s.version}</span>
+                {!s.cited && <span className="tag"> retrieved, not cited</span>}
+                <span className="tx-heading">{s.heading}</span>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </figure>
   )
 }

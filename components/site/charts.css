@@ -1,0 +1,65 @@
+/* Structure only. Colour, type and size come from the option using the chart. */
+.ch { --ch-lw: 13.5rem; --ch-vw: 3.5rem; margin: 0; }
+.ch figcaption { margin-top: 12px; font-size: 13.5px; line-height: 1.5; color: var(--ch-muted); }
+
+.ch-row, .ch-axis { display: grid; grid-template-columns: var(--ch-lw) 1fr var(--ch-vw); align-items: center; }
+.ch-row { min-height: 34px; }
+.ch-label { font-size: 14px; color: var(--ch-ink); padding-right: 12px; line-height: 1.3; }
+.ch-val { text-align: right; font-family: var(--ch-mono); font-variant-numeric: tabular-nums; font-size: 14px; color: var(--ch-ink); }
+.ch-track { position: relative; height: 34px; }
+.ch-track::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; border-top: 1px dashed var(--ch-rule); }
+
+.ch-axis { height: 22px; }
+.ch-ticks { position: relative; height: 100%; }
+.ch-ticks span { position: absolute; transform: translateX(-50%); font-family: var(--ch-mono); font-size: 11.5px; color: var(--ch-muted); }
+.ch-ticks span:first-child { transform: none; }
+.ch-ticks span:last-child { transform: translateX(-100%); }
+
+.ch-dot { position: absolute; top: 50%; width: 13px; height: 13px; border-radius: 50%; background: var(--ch-accent); transform: translate(-50%, -50%); box-shadow: 0 0 0 3px var(--ch-bg); }
+.ch-seg { position: absolute; top: 50%; height: 3px; transform: translateY(-50%); background: var(--ch-accent); opacity: 0.45; }
+.ch-miss .ch-dot { background: var(--ch-miss); }
+.ch-miss .ch-label, .ch-miss .ch-val { color: var(--ch-miss); }
+.ch-gap { position: absolute; top: 50%; height: 12px; transform: translateY(-50%);
+  background: repeating-linear-gradient(135deg, var(--ch-miss) 0 2px, transparent 2px 6px); opacity: 0.5; }
+
+.ch-cells { display: grid; grid-template-columns: repeat(17, 1fr); gap: 4px; max-width: 440px; }
+.ch-cells span { aspect-ratio: 1; border-radius: 2px; }
+.ch-cells .on { background: var(--ch-ok); }
+.ch-cells .off { border: 1.5px solid var(--ch-miss); background: transparent; }
+.ch-waffle figcaption strong { color: var(--ch-ink); font-weight: 600; }
+
+.ch-inj { --ch-lw: 9.5rem; --ch-vw: 2.5rem; }
+.ch-inj-plot { position: relative; padding-top: 22px; }
+.ch-bar { position: absolute; left: 0; top: 50%; height: 16px; transform: translateY(-50%); background: var(--ch-miss); border-radius: 0 2px 2px 0; }
+.ch-inj .ch-row + .ch-row .ch-bar { opacity: 0.75; }
+.ch-bar-line { position: absolute; top: 0; bottom: 0; border-left: 2px solid var(--ch-ink); }
+.ch-bar-line span { position: absolute; top: 0; left: 6px; white-space: nowrap; font-family: var(--ch-mono); font-size: 11.5px; color: var(--ch-ink); }
+
+.ch-stack { display: flex; height: 28px; gap: 2px; border-radius: 3px; overflow: hidden; }
+.ch-stack span { min-width: 3px; }
+.ch-ledger .s1 { background: var(--ch-s1); }
+.ch-ledger .s2 { background: var(--ch-s2); }
+.ch-ledger .s3 { background: var(--ch-s3); }
+.ch-ledger .s4 { background: var(--ch-s4); }
+.ch-ledger .s5 { background: var(--ch-s5); }
+.ch-legend { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 20px; }
+.ch-legend li { display: flex; align-items: center; gap: 7px; font-size: 13.5px; color: var(--ch-ink); }
+.ch-legend i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+.ch-legend code { font-family: var(--ch-mono); font-size: 12.5px; color: var(--ch-muted); }
+.ch-legend span { font-family: var(--ch-mono); font-variant-numeric: tabular-nums; }
+
+.flow { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); }
+.flow li { position: relative; padding: 14px 18px 14px 0; display: flex; flex-direction: column; gap: 4px; }
+.flow li:not(:last-child)::after { content: "→"; position: absolute; right: 4px; top: 12px; color: var(--ch-muted); }
+.flow b { font-family: var(--ch-mono); font-weight: 600; font-size: 15px; color: var(--ch-accent); }
+.flow span { font-size: 13.5px; line-height: 1.4; color: var(--ch-muted); }
+
+@media (max-width: 720px) {
+  .ch { --ch-lw: 8.5rem; --ch-vw: 2.75rem; }
+  .ch-label { font-size: 12.5px; }
+  .ch-cells { grid-template-columns: repeat(13, 1fr); }
+  .flow { grid-template-columns: 1fr; }
+  .flow li { flex-direction: row; gap: 12px; padding: 8px 0; align-items: baseline; }
+  .flow b { min-width: 5.5rem; }
+  .flow li:not(:last-child)::after { content: none; }
+}
