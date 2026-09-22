@@ -60,7 +60,7 @@ html { background: #e3e0d9; }
 .site .btn.sm { min-height: 36px; padding: 0 14px; font-size: 14px; }
 @media (prefers-reduced-motion: no-preference) { .site .btn:hover { transform: translateY(-1px); } .site .btn { transition: transform .15s ease, background-color .15s ease; } }
 
-/* Sticky: the résumé and the way home stay one click away on every page. */
+/* Sticky: the resume and the way home stay one click away on every page. */
 .site .nav { position: sticky; top: 0; z-index: 20; background: rgb(227 224 217 / 0.9); backdrop-filter: saturate(1.2) blur(10px); -webkit-backdrop-filter: saturate(1.2) blur(10px); border-top: 4px solid var(--ink); border-bottom: 1px solid var(--hair); }
 .site .top { display: flex; justify-content: space-between; align-items: center; min-height: 60px; }
 .site .top .name { font-weight: 700; letter-spacing: -0.02em; font-size: 17px; color: var(--ink); text-decoration: none; }

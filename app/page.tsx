@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { RESUME } from "@/components/site/chrome"
 import { PROFILE, EXPERIENCE, EDUCATION, PUBLICATIONS } from "@/content/site"
 import { sqlalchemyUpgradeAgent as agent } from "@/content/work/sqlalchemy-upgrade-agent"
 import { geochemPipeline as pipe } from "@/content/work/geochem-pipeline"
@@ -35,7 +36,9 @@ export default function Home() {
               I build systems that cite their sources, and I publish the numbers <em>when they miss.</em>
             </h1>
             <p className="ctas">
-              <a className="btn" href="/Viraj_Vaghasia_Resume.pdf">Download résumé</a>
+              <a className="btn" href={RESUME} target="_blank" rel="noopener">
+                View resume (PDF)
+              </a>
               <a className="btn ghost" href={`mailto:${PROFILE.email}`}>Email me</a>
             </p>
           </div>

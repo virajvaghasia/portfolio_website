@@ -1,10 +1,15 @@
 import Link from "next/link"
 import { PROFILE } from "@/content/site"
 
-const RESUME = "/Viraj_Vaghasia_Resume.pdf"
+/**
+ * Opens in a new tab rather than downloading: a recruiter can read it at once
+ * and keep this site open behind it. The file name is what they get if they
+ * save it, so it carries the full name.
+ */
+export const RESUME = "/Viraj_Vaghasia_Resume.pdf"
 
 /**
- * Sticky, so the résumé and the way back home are one click away however far
+ * Sticky, so the resume and the way back home are one click away however far
  * down a case study the reader is. Section links are absolute (`/#work`) so the
  * same bar works on every page.
  */
@@ -20,8 +25,8 @@ export function SiteNav() {
           <Link href="/#record">Record</Link>
           <a href={PROFILE.links[0].href}>GitHub</a>
           <a href={PROFILE.links[1].href}>LinkedIn</a>
-          <a className="btn sm" href={RESUME}>
-            Résumé
+          <a className="btn sm" href={RESUME} target="_blank" rel="noopener">
+            Resume
           </a>
         </nav>
       </div>
@@ -39,7 +44,9 @@ export function SiteFooter() {
         <a href={`mailto:${PROFILE.email}`}>{PROFILE.email}</a>
         <a href={PROFILE.links[0].href}>GitHub</a>
         <a href={PROFILE.links[1].href}>LinkedIn</a>
-        <a href={RESUME}>Résumé</a>
+        <a href={RESUME} target="_blank" rel="noopener">
+          Resume
+        </a>
       </nav>
     </footer>
   )
