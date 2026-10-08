@@ -32,7 +32,7 @@ export const EDUCATION = [
     degree: "M.S. Computer Science",
     org: "University of Southern California",
     period: "Aug 2025 – May 2027",
-    note: "GPA 3.88/4.00. Algorithms, information retrieval, databases, applied NLP.",
+    note: "GPA 3.86/4.00. Algorithms, information retrieval, databases, applied NLP.",
   },
   {
     degree: "B.E. Information Technology",
